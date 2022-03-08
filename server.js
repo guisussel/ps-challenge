@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to pure spectrum challenge application." }); //will appear on the browser
 });
 require("./app/routes/test.routes")(app);
+require("./app/routes/book.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
