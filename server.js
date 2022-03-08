@@ -9,7 +9,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 // parse requests of content-type
 app.use(express.urlencoded({ extended: true }));
-const db = require("./app/models");
+const db = require("./app/models"); //use models folder
+//try database connection
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
@@ -23,12 +24,13 @@ db.mongoose
     process.exit();
   });
 
-// simple route
+// simple default route 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to pure spectrum challenge application." }); //will appear on the browser
 });
-require("./app/routes/test.routes")(app);
+//add the routes of the entities
 require("./app/routes/book.routes")(app);
+require("./app/routes/bookInventory.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
