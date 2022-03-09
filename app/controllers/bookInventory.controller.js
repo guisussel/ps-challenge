@@ -9,15 +9,15 @@ const { v4: uuidv4 } = require('uuid');
 // Create and Save a new bookInventory
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.book || !req.body.quantity) {
-        res.status(400).send({ message: "Bad Request (400). Book and quantity fields cannot be empty!" });
+    if (!req.body) {
+        res.status(400).send({ message: "Bad Request (400). Fields cannot be empty!" });
         return;
     }
     // Create a bookInventory
     const bookInventory = new BookInventory({
         //id: uuidv4(), //generate a random uuid for each book item --commented for unit testing
         id: req.body.id,
-        book: req.body.book,
+        books: req.body.books,
         quantity: req.body.quantity
     });
     // Save bookInventory in the database
@@ -41,7 +41,7 @@ exports.findAll = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving bookInventory."
+                    err.message || "Internal Server Error (500). Some error occurred while retrieving bookInventory."
             });
         });
 };
@@ -50,13 +50,13 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     BookInventory.findById(id).then(data => {
         if (!data)
-            res.status(404).send({ message: "Not found bookInventory with id " + id });
+            res.status(404).send({ message: "Not Found (404). Not found bookInventory with id " + id });
         else res.send(data);
     })
         .catch(err => {
             res
                 .status(500)
-                .send({ message: "Error retrieving bookInventory with id=" + id });
+                .send({ message: "Internal Server Error (500). Error retrieving bookInventory with id=" + id });
         });
 };
 // Update a bookInventory by the id in the request
@@ -71,13 +71,13 @@ exports.update = (req, res) => {
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot update bookInventory with id=${id}. Maybe bookInventory was not found!`
+                    message: `Not Found (404). Cannot update bookInventory with id=${id}. Maybe bookInventory was not found!`
                 });
             } else res.send({ message: "bookInventory was updated successfully." });
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating bookInventory with id=" + id
+                message: "Internal Server Error (500). Error updating bookInventory with id=" + id
             });
         });
 };
@@ -88,7 +88,7 @@ exports.delete = (req, res) => {
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete bookInventory with id=${id}. Maybe bookInventory was not found!`
+                    message: `Not Found (404). Cannot delete bookInventory with id=${id}. Maybe bookInventory was not found!`
                 });
             } else {
                 res.send({
@@ -98,7 +98,7 @@ exports.delete = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete bookInventory with id=" + id
+                message: "Internal Server Error (500). Could not delete bookInventory with id=" + id
             });
         });
 };
@@ -113,7 +113,7 @@ exports.deleteAll = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while removing all bookInventory."
+                    err.message || "Internal Server Error (500). Some error occurred while removing all bookInventory."
             });
         });
 };

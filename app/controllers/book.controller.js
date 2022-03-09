@@ -8,6 +8,9 @@ const Book = db.books;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new book
 exports.create = (req, res) => {
+    //TODO
+    //-cannot have duplicates
+
     // Validate request
     if (!req.body.name || !req.body.authors) {
         res.status(400).send({ message: "Bad Request (400). Book name and Author(s) fields cannot be empty!" });
@@ -25,8 +28,7 @@ exports.create = (req, res) => {
         format: req.body.format
     });
     // Save book in the database
-    book
-        .save(book)
+    book.save(book)
         .then(data => {
             res.send(data);
         })
@@ -53,12 +55,12 @@ exports.findAll = (req, res) => {
 // Find a single book with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Book.findById(id).then( data => {
+    Book.findById(id).then(data => {
         if (!data)
-            res.status(404).send({ message: "Not found book with id " + id });
+            res.status(404).send({ message: "Bad Request (400). Not found book with id " + id });
         else res.send(data);
     }).catch(err => {
-            res.status(500).send({ message: "Error retrieving book with id=" + id });
+            res.status(500).send({ message: "Internal Server Error (500). Error retrieving book with id=" + id });
         });
 };
 
@@ -66,7 +68,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     if (!req.body) {
         return res.status(400).send({
-            message: "Data to update can not be empty!"
+            message: "Bad Request (400). Data to update can not be empty!"
         });
     }
     const id = req.params.id;
@@ -74,7 +76,7 @@ exports.update = (req, res) => {
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot update book with id=${id}. Maybe book was not found!`
+                    message: `Not Found (404). Cannot update book with id=${id}. Maybe book was not found!`
                 });
             } else res.send({ message: "Book was updated successfully." });
         })
@@ -84,6 +86,9 @@ exports.update = (req, res) => {
             });
         });
 };
+
+//TODO
+//-cannot remove a book with positive inventory;
 // Delete a book with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
@@ -91,7 +96,7 @@ exports.delete = (req, res) => {
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete book with id=${id}. Maybe book was not found!`
+                    message: `Not Found (404). Cannot delete book with id=${id}. Maybe book was not found!`
                 });
             } else {
                 res.send({
@@ -106,6 +111,8 @@ exports.delete = (req, res) => {
         });
 };
 
+//TODO
+//-cannot remove a book with positive inventory;
 // Delete all books from the database.
 exports.deleteAll = (req, res) => {
     Book.deleteMany({})

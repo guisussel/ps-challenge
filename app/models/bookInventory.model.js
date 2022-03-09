@@ -4,7 +4,12 @@ module.exports = mongoose => {
         {
             //attributes
             id: Number,
-            book: String,
+            books: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Book"
+                }
+            ],
             quantity: Number
         },
         { timestamps: true }
