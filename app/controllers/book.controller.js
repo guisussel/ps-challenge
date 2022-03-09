@@ -7,7 +7,7 @@ const db = require("../models");
 const Book = db.books;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new book
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     //TODO
     //-cannot have duplicates
 
@@ -40,7 +40,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all books from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
     Book.find()
         .then(data => {
             res.send(data);
@@ -53,7 +53,7 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single book with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
     const id = req.params.id;
     Book.findById(id).then(data => {
         if (!data)
@@ -65,7 +65,7 @@ exports.findOne = (req, res) => {
 };
 
 // Update a book by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Bad Request (400). Data to update can not be empty!"
@@ -90,7 +90,7 @@ exports.update = (req, res) => {
 //TODO
 //-cannot remove a book with positive inventory;
 // Delete a book with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
     Book.findByIdAndRemove(id)
         .then(data => {
@@ -114,7 +114,7 @@ exports.delete = (req, res) => {
 //TODO
 //-cannot remove a book with positive inventory;
 // Delete all books from the database.
-exports.deleteAll = (req, res) => {
+exports.deleteAll = async (req, res) => {
     Book.deleteMany({})
         .then(data => {
             res.send({

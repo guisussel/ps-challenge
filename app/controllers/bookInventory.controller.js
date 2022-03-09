@@ -7,7 +7,7 @@ const db = require("../models");
 const BookInventory = db.bookInventorys;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new bookInventory
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     // Validate request
     if (!req.body) {
         res.status(400).send({ message: "Bad Request (400). Fields cannot be empty!" });
@@ -33,7 +33,7 @@ exports.create = (req, res) => {
         });
 };
 // Retrieve all bookInventory from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
     BookInventory.find()
         .then(data => {
             res.send(data);
@@ -46,7 +46,7 @@ exports.findAll = (req, res) => {
         });
 };
 // Find a single bookInventory with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
     const id = req.params.id;
     BookInventory.findById(id).then(data => {
         if (!data)
@@ -60,7 +60,7 @@ exports.findOne = (req, res) => {
         });
 };
 // Update a bookInventory by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -82,7 +82,7 @@ exports.update = (req, res) => {
         });
 };
 // Delete a bookInventory with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
     BookInventory.findByIdAndRemove(id)
         .then(data => {
@@ -103,7 +103,7 @@ exports.delete = (req, res) => {
         });
 };
 // Delete all bookInventory from the database.
-exports.deleteAll = (req, res) => {
+exports.deleteAll = async (req, res) => {
     BookInventory.deleteMany({})
         .then(data => {
             res.send({
