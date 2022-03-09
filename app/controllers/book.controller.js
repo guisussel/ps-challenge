@@ -1,11 +1,16 @@
+/*
+Create, Modify, Delete, list all books;
+List books by authors and publisher;
+Add to inventory, remove from inventory.
+ */
 const db = require("../models");
 const Book = db.books;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new book
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.name) {
-        res.status(400).send({ message: "Content cannot be empty!" });
+    if (!req.body.name || !req.body.authors) {
+        res.status(400).send({ message: "Bad Request (400). Book name and Author(s) fields cannot be empty!" });
         return;
     }
     // Create a book
@@ -16,7 +21,8 @@ exports.create = (req, res) => {
         authors: req.body.authors,
         publisher: req.body.publisher,
         yearOfPublication: req.body.yearOfPublication,
-        summary: req.body.summary
+        summary: req.body.summary,
+        format: req.body.format
     });
     // Save book in the database
     book
@@ -26,40 +32,36 @@ exports.create = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while saving book on database."
+                message: err.message || "Internal Server Error (500). Error occurred while saving book on the database."
             });
         });
 };
+
 // Retrieve all books from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
-    Book.find(condition)
+    Book.find()
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving books."
+                message: err.message || "Internal Server Error (500). Error occurred while fetching books from the database."
             });
         });
 };
+
 // Find a single book with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Book.findById(id).then(data => {
+    Book.findById(id).then( data => {
         if (!data)
             res.status(404).send({ message: "Not found book with id " + id });
         else res.send(data);
-    })
-        .catch(err => {
-            res
-                .status(500)
-                .send({ message: "Error retrieving book with id=" + id });
+    }).catch(err => {
+            res.status(500).send({ message: "Error retrieving book with id=" + id });
         });
 };
+
 // Update a book by the id in the request
 exports.update = (req, res) => {
     if (!req.body) {
@@ -103,6 +105,7 @@ exports.delete = (req, res) => {
             });
         });
 };
+
 // Delete all books from the database.
 exports.deleteAll = (req, res) => {
     Book.deleteMany({})
@@ -115,19 +118,6 @@ exports.deleteAll = (req, res) => {
             res.status(500).send({
                 message:
                     err.message || "Some error occurred while removing all books."
-            });
-        });
-};
-// Find all books
-exports.findAllPublished = (req, res) => {
-    Book.find({ published: true })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving books."
             });
         });
 };

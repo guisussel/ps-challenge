@@ -1,11 +1,16 @@
+/*
+Create, Modify, Delete, list all books;
+List books by authors and publisher;
+Add to inventory, remove from inventory.
+ */
 const db = require("../models");
 const BookInventory = db.bookInventorys;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new bookInventory
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.book) {
-        res.status(400).send({ message: "Content cannot be empty!" });
+    if (!req.body.book || !req.body.quantity) {
+        res.status(400).send({ message: "Bad Request (400). Book and quantity fields cannot be empty!" });
         return;
     }
     // Create a bookInventory
@@ -23,16 +28,13 @@ exports.create = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
-                    err.message || "Some error occurred while saving book on database."
+                message: err.message || "Internal Server Error (500). Error occurred while saving bookInventory on the database."
             });
         });
 };
 // Retrieve all bookInventory from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
-    BookInventory.find(condition)
+    BookInventory.find()
         .then(data => {
             res.send(data);
         })
@@ -43,7 +45,7 @@ exports.findAll = (req, res) => {
             });
         });
 };
-// Find a single book with an id
+// Find a single bookInventory with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
     BookInventory.findById(id).then(data => {
@@ -79,7 +81,7 @@ exports.update = (req, res) => {
             });
         });
 };
-// Delete a book with the specified id in the request
+// Delete a bookInventory with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
     BookInventory.findByIdAndRemove(id)
@@ -100,7 +102,7 @@ exports.delete = (req, res) => {
             });
         });
 };
-// Delete all books from the database.
+// Delete all bookInventory from the database.
 exports.deleteAll = (req, res) => {
     BookInventory.deleteMany({})
         .then(data => {
@@ -112,19 +114,6 @@ exports.deleteAll = (req, res) => {
             res.status(500).send({
                 message:
                     err.message || "Some error occurred while removing all bookInventory."
-            });
-        });
-};
-// Find all books
-exports.findAllPublished = (req, res) => {
-    BookInventory.find({ published: true })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving bookInventory."
             });
         });
 };

@@ -24,11 +24,10 @@ db.mongoose.connection.on('error', console.error.bind(console, 'MongoDB connecti
 
 // simple default route 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to pure spectrum challenge application." }); //will appear on the browser
+  res.json({ message: "Pure Spectrum Book Comet: Coding Challenge" }); //will appear on the browser
 });
 //add the routes of the entities
 require("./app/routes/book.routes")(app);
-require("./app/routes/eBook.routes")(app);
 require("./app/routes/bookInventory.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

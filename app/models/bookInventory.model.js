@@ -1,6 +1,8 @@
+//entity BookInventory
 module.exports = mongoose => {
     var schema = mongoose.Schema(
         {
+            //attributes
             id: Number,
             book: String,
             quantity: Number

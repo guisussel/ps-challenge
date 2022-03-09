@@ -1,12 +1,15 @@
+//entity Book
 module.exports = mongoose => {
     var schema = mongoose.Schema(
         {
+            //attributes
             id: Number,
             name: String,
             authors: String,
             publisher: String,
             yearOfPublication: Number,
-            summary: String
+            summary: String,
+            format: String
         },
         { timestamps: true }
     );
