@@ -10,7 +10,8 @@ exports.create = (req, res) => {
     }
     // Create a book
     const book = new Book({
-        id: uuidv4(), //generate a random uuid for each book item
+        //id: uuidv4(), //generate a random uuid for each book item --commented for unit testing
+        id: req.body.id,
         name: req.body.name,
         authors: req.body.authors,
         publisher: req.body.publisher,

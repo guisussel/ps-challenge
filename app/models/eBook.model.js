@@ -2,8 +2,12 @@ module.exports = mongoose => {
     var schema = mongoose.Schema(
         {
             id: Number,
-            book: String,
-            quantity: Number
+            name: String,
+            authors: String,
+            publisher: String,
+            yearOfPublication: Number,
+            summary: String,
+            format: String
         },
         { timestamps: true }
     );
@@ -12,6 +16,6 @@ module.exports = mongoose => {
         object.id = _id;
         return object;
     });
-    const BookInventory = mongoose.model("bookInventory", schema);
-    return BookInventory;
+    const EBook = mongoose.model("eBook", schema);
+    return EBook;
 };

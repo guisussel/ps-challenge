@@ -5,8 +5,6 @@ module.exports = app => {
     router.post("/", books.create);
     // Retrieve all book
     router.get("/", books.findAll);
-    // Retrieve all published book
-    router.get("/published", books.findAllPublished);
     // Retrieve a single book with id
     router.get("/:id", books.findOne);
     // Update a book with id
