@@ -6,37 +6,19 @@ Add to inventory, remove from inventory.
 const db = require("../models");
 const Book = db.books;
 const { v4: uuidv4 } = require('uuid');
+
 // Create and Save a new book
 exports.create = async (req, res) => {
-    //TODO
-    //-cannot have duplicates
+    try {
+        const book = await Book.create(req.body);
 
-    // Validate request
-    if (!req.body.name || !req.body.authors) {
-        res.status(400).send({ message: "Bad Request (400). Book name and Author(s) fields cannot be empty!" });
-        return;
-    }
-    // Create a book
-    const book = new Book({
-        //id: uuidv4(), //generate a random uuid for each book item --commented for unit testing
-        id: req.body.id,
-        name: req.body.name,
-        authors: req.body.authors,
-        publisher: req.body.publisher,
-        yearOfPublication: req.body.yearOfPublication,
-        summary: req.body.summary,
-        format: req.body.format
-    });
-    // Save book in the database
-    book.save(book)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Internal Server Error (500). Error occurred while saving book on the database."
-            });
+        return res.status(201).json({
+            book
         });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 };
 
 // Retrieve all books from the database.
@@ -60,8 +42,8 @@ exports.findOne = async (req, res) => {
             res.status(404).send({ message: "Bad Request (400). Not found book with id " + id });
         else res.send(data);
     }).catch(err => {
-            res.status(500).send({ message: "Internal Server Error (500). Error retrieving book with id=" + id });
-        });
+        res.status(500).send({ message: "Internal Server Error (500). Error retrieving book with id=" + id });
+    });
 };
 
 // Update a book by the id in the request
@@ -82,7 +64,7 @@ exports.update = async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating book with id=" + id
+                message: `Error updating book with id= + ${id}`
             });
         });
 };
@@ -91,24 +73,17 @@ exports.update = async (req, res) => {
 //-cannot remove a book with positive inventory;
 // Delete a book with the specified id in the request
 exports.delete = async (req, res) => {
-    const id = req.params.id;
-    Book.findByIdAndRemove(id)
-        .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Not Found (404). Cannot delete book with id=${id}. Maybe book was not found!`
-                });
-            } else {
-                res.send({
-                    message: "Book was deleted successfully!"
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete book with id=" + id
-            });
-        });
+    try {
+
+        const bookId  = req.params.id;
+        const deleted = await Book.findByIdAndRemove(bookId);
+        if (deleted) {
+            return res.status(200).send("Book deleted with success");
+        }
+        throw new Error({ message: `Not Found (404). Cannot delete book with id=${bookId}. Book was not found!` });
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
 };
 
 //TODO

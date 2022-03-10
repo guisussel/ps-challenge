@@ -8,30 +8,17 @@ const BookInventory = db.bookInventorys;
 const { v4: uuidv4 } = require('uuid');
 // Create and Save a new bookInventory
 exports.create = async (req, res) => {
-    // Validate request
-    if (!req.body) {
-        res.status(400).send({ message: "Bad Request (400). Fields cannot be empty!" });
-        return;
-    }
-    // Create a bookInventory
-    const bookInventory = new BookInventory({
-        //id: uuidv4(), //generate a random uuid for each book item --commented for unit testing
-        id: req.body.id,
-        books: req.body.books,
-        quantity: req.body.quantity
-    });
-    // Save bookInventory in the database
-    bookInventory
-        .save(bookInventory)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Internal Server Error (500). Error occurred while saving bookInventory on the database."
-            });
+    try {
+        const bookInventory = await BookInventory.create(req.body);
+        return res.status(201).json({
+            bookInventory
         });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 };
+
 // Retrieve all bookInventory from the database.
 exports.findAll = async (req, res) => {
     BookInventory.find()
@@ -77,32 +64,32 @@ exports.update = async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Internal Server Error (500). Error updating bookInventory with id=" + id
+                message: `Internal Server Error (500). Error updating bookInventory with id=${id}`
             });
         });
 };
+
+//TODO
+//-cannot remove a bookInventory with positive inventory;
 // Delete a bookInventory with the specified id in the request
 exports.delete = async (req, res) => {
-    const id = req.params.id;
-    BookInventory.findByIdAndRemove(id)
-        .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Not Found (404). Cannot delete bookInventory with id=${id}. Maybe bookInventory was not found!`
-                });
-            } else {
-                res.send({
-                    message: "bookInventory was deleted successfully!"
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Internal Server Error (500). Could not delete bookInventory with id=" + id
-            });
-        });
+    try {
+
+        const bookInventoryId  = req.params.id;
+        const deleted = await BookInventory.findByIdAndRemove(bookInventoryId);
+        if (deleted) {
+            console.log(res.status);
+            return res.status(200).send("BookInventory deleted with success");
+        }
+        throw new Error({ message: `Not Found (404). Cannot delete bookInventory with id=${bookInventoryId}. BookInventory was not found!` });
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
 };
-// Delete all bookInventory from the database.
+
+//TODO
+//-cannot remove a book with positive inventory;
+// Delete all books from the database.
 exports.deleteAll = async (req, res) => {
     BookInventory.deleteMany({})
         .then(data => {
