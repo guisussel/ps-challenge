@@ -1,6 +1,6 @@
 const databaseProvider = "mongodb"
 const databaseName = "pureSpectrumCRUD"; //database name
-const databaseHost = "12.0.0.1" //localhost
+const databaseHost = "127.0.0.1" //localhost
 const databasePort = "27017" //default
 
 module.exports = {
