@@ -48,9 +48,14 @@ APP
 
 INSTALLATION:
 1- clone this repository;
+
 2- run "npm install" on the root directory to install all libraries
-3- download and install MongoDB https://www.mongodb.com/try/download/community, later on create a database named "pureSpectrumCRUD" and its collections "books" and "bookInventorys".
+
+3- download and install MongoDB https://www.mongodb.com/try/download/community, later on create a database named "pureSpectrumCRUD" and its collections "books" and 
+"bookInventorys".
+
 4- run "npm start" on the root directory.
+
 It should connect on the database and run on "localhost:8080"
 
 Tests:
