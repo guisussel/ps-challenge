@@ -78,7 +78,6 @@ exports.delete = async (req, res) => {
         const bookInventoryId  = req.params.id;
         const deleted = await BookInventory.findByIdAndRemove(bookInventoryId);
         if (deleted) {
-            console.log(res.status);
             return res.status(200).send("BookInventory deleted with success");
         }
         throw new Error({ message: `Not Found (404). Cannot delete bookInventory with id=${bookInventoryId}. BookInventory was not found!` });

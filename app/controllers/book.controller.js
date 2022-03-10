@@ -11,7 +11,6 @@ const { v4: uuidv4 } = require('uuid');
 exports.create = async (req, res) => {
     try {
         const book = await Book.create(req.body);
-
         return res.status(201).json({
             book
         });

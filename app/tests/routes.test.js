@@ -108,7 +108,7 @@ describe('Post Endpoints', () => {
   //test11
   it('should update a book', async () => {
     const res = await request(app).put(`/api/books/${objectId1}`) .send({
-        "author": "author1, author2",
+        "authors": "author1, author2",
         "summary": "new summary",
       });
     expect(res.statusCode).toEqual(200);
